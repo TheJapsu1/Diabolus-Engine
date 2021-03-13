@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Diabolus_Engine.Drawables;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using static Diabolus_Engine.Helper;
+using System.Runtime.InteropServices;
+using System;
 
 namespace Diabolus_Engine
 {
@@ -9,20 +13,25 @@ namespace Diabolus_Engine
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Texture2D planetSprite;
-        //private Texture2D backgroundSprite;
         private SpriteFont font;
 
         public Editor()
         {
             graphics = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
-        //initialize stuff here
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width / 2;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height / 2;
+            graphics.IsFullScreen = false;
+            graphics.ApplyChanges();
+            Window.AllowUserResizing = true;
+
+            Components.Add(new InfoPanel(this));
 
             base.Initialize();
         }
@@ -33,28 +42,27 @@ namespace Diabolus_Engine
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             planetSprite = Content.Load<Texture2D>("sprites/2");
-            //backgroundSprite = Content.Load<Texture2D>("sprites/background");
             font = Content.Load<SpriteFont>("fonts/title");
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 CloseEditor();
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
+                CreateConsole();
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(40, 40, 40));
+            GraphicsDevice.Clear(new Color(44, 62, 80));
 
             spriteBatch.Begin();
-
-            //spriteBatch.Draw(backgroundSprite, new Rectangle(0, 0, 800, 480), Color.White);
             spriteBatch.Draw(planetSprite, new Rectangle(0, 0, 200, 200), Color.White);
-            spriteBatch.DrawString(font, "Diabolus Engine", new Vector2(400 - font.MeasureString("Diabolus Engine").X / 2, font.MeasureString("Diabolus_Engine").Y), Color.Red);
-
+            spriteBatch.DrawString(font, "Diabolus Engine", new Vector2(GetScreenPosition(ScreenPosition.TopCenter, GetViewportSize(GraphicsDevice)).X - font.MeasureString("Diabolus Engine").X / 2, font.MeasureString("Diabolus Engine").Y), Color.Red);
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -64,6 +72,15 @@ namespace Diabolus_Engine
         void CloseEditor()
         {
             Exit();
+        }
+
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
+        private void CreateConsole()
+        {
+            AllocConsole();
+            Console.Title = "Diabolus debugger";
+            Console.WriteLine("Debugging started");
         }
     }
 }
