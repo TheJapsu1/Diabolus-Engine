@@ -24,3 +24,4 @@ D:\Visual Studio Projects\Diabolus Engine\obj\Debug\netcoreapp3.1\Diabolus Engin
 D:\Visual Studio Projects\Diabolus Engine\bin\Debug\netcoreapp3.1\Content\sprites\2.xnb
 D:\Visual Studio Projects\Diabolus Engine\bin\Debug\netcoreapp3.1\Content\sprites\background.xnb
 D:\Visual Studio Projects\Diabolus Engine\bin\Debug\netcoreapp3.1\Content\fonts\title.xnb
+D:\Visual Studio Projects\Diabolus Engine\bin\Debug\netcoreapp3.1\Content\fonts\buttonDefault.xnb

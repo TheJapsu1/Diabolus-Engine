@@ -8,8 +8,9 @@ namespace Diabolus_Engine
 {
     public static class Helper
     {
-        public static Vector2 GetScreenPosition(ScreenPosition screenPosition, Vector2 screenSize)
+        public static Vector2 GetScreenPosition(ScreenPosition screenPosition, GraphicsDevice graphicsDevice)
         {
+            Vector2 screenSize = graphicsDevice.Viewport.Bounds.Size.ToVector2();
             switch (screenPosition)
             {
                 case ScreenPosition.TopLeft:

@@ -9,14 +9,14 @@ namespace Diabolus_Engine.Drawables
 {
     public class InfoPanel : DrawableGameComponent
     {
-        Texture2D dummyTexture;
-        SpriteFont font;
-        Game game;
+        private Texture2D dummyTexture;
+        private SpriteFont font;
+        private Game game;
         private Vector2 infoPanelPadding = new Vector2(30, 30);
         private Vector2 infoPanelSize;
         private const string infoPanelText =
             "Esc = exit editor\n" +
-            "C = open console\n" +
+            "F5 = enable safe-mode\n" +
             "Time since editor start:";
 
         public InfoPanel(Game game) : base(game)
@@ -47,7 +47,7 @@ namespace Diabolus_Engine.Drawables
         {
             SpriteBatch spriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
             spriteBatch.Begin();
-            spriteBatch.Draw(dummyTexture, new Rectangle((GetScreenPosition(ScreenPosition.BottomLeft, GetViewportSize(GraphicsDevice)) - new Vector2(0, infoPanelSize.Y)).ToPoint(), infoPanelSize.ToPoint()), Color.White);
+            spriteBatch.Draw(dummyTexture, new Rectangle((GetScreenPosition(ScreenPosition.BottomLeft, GraphicsDevice) - new Vector2(0, infoPanelSize.Y)).ToPoint(), infoPanelSize.ToPoint()), Color.White);
             spriteBatch.DrawString(font, gameTime.TotalGameTime.ToString(@"hh\:mm\:ss\:ff"), new Vector2(0, GetViewportSize(GraphicsDevice).Y - font.MeasureString(infoPanelText).Y), Color.White);
             spriteBatch.DrawString(font, infoPanelText, new Vector2(0, GetViewportSize(GraphicsDevice).Y - font.MeasureString(infoPanelText).Y * 2), Color.White);
             spriteBatch.End();

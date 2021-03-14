@@ -2,22 +2,22 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using static Diabolus_Engine.Helper;
-using System.Runtime.InteropServices;
 using System;
+using System.Collections.Generic;
+using static Diabolus_Engine.Helper;
 
 namespace Diabolus_Engine
 {
     public class Editor : Game
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-        private Texture2D planetSprite;
-        private SpriteFont font;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private bool safeMode = false;
+        private List<Rectangle> buttons = new List<Rectangle>();
 
         public Editor()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -25,13 +25,30 @@ namespace Diabolus_Engine
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width / 2;
-            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height / 2;
-            graphics.IsFullScreen = false;
-            graphics.ApplyChanges();
+            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width / 2;
+            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height / 2;
+            _graphics.IsFullScreen = false;
+            _graphics.ApplyChanges();
             Window.AllowUserResizing = true;
 
+            //create our info panel
             Components.Add(new InfoPanel(this));
+
+            //create our button rectangles
+            buttons.Add(new Rectangle(GetScreenPosition(ScreenPosition.BottomRight, GraphicsDevice).ToPoint(), new Point(100, 60)));
+
+            //create our debug console
+            DebugConsole.Create();
+
+            //create buttons
+            foreach (Rectangle rect in buttons)
+            {
+                Rectangle rectangle = rect;
+                rectangle.Location -= rect.Size;
+                Button button = new Button(this, rectangle, "Exit", Color.Black);
+                button.AddOnClickListener += CloseEditor;
+                Components.Add(button);
+            }
 
             base.Initialize();
         }
@@ -39,19 +56,25 @@ namespace Diabolus_Engine
         //load textures, models, fonts, music, etc here
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            planetSprite = Content.Load<Texture2D>("sprites/2");
-            font = Content.Load<SpriteFont>("fonts/title");
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
+            _planetSprite = Content.Load<Texture2D>("sprites/2");
+            _font = Content.Load<SpriteFont>("fonts/title");
+            Services.AddService(typeof(SpriteBatch), _spriteBatch);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                CloseEditor();
-            if (Keyboard.GetState().IsKeyDown(Keys.C))
-                CreateConsole();
+            Input.GetState();
+            if (Input.GetKeyDown(Keys.Escape))
+                CloseEditor(null, null);
+            if (Input.GetKeyDown(Keys.F5))
+                safeMode = !safeMode;
+
+            if (safeMode)
+                Window.IsBorderless = true;
+            else
+                Window.IsBorderless = false;
 
             base.Update(gameTime);
         }
@@ -60,27 +83,13 @@ namespace Diabolus_Engine
         {
             GraphicsDevice.Clear(new Color(44, 62, 80));
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(planetSprite, new Rectangle(0, 0, 200, 200), Color.White);
-            spriteBatch.DrawString(font, "Diabolus Engine", new Vector2(GetScreenPosition(ScreenPosition.TopCenter, GetViewportSize(GraphicsDevice)).X - font.MeasureString("Diabolus Engine").X / 2, font.MeasureString("Diabolus Engine").Y), Color.Red);
-            spriteBatch.End();
-
             base.Draw(gameTime);
         }
 
         //handle stuff before closing
-        void CloseEditor()
+        void CloseEditor(object sender, EventArgs e)
         {
-            Exit();
-        }
-
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
-        private void CreateConsole()
-        {
-            AllocConsole();
-            Console.Title = "Diabolus debugger";
-            Console.WriteLine("Debugging started");
+            DebugConsole.ConfirmLeave(this);
         }
     }
 }

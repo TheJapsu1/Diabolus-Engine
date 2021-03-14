@@ -4,11 +4,13 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>D:/Visual Studio Projects/Diabolus Engine/Content/fonts/buttonDefault.spritefont</File>
     <File>D:/Visual Studio Projects/Diabolus Engine/Content/fonts/title.spritefont</File>
     <File>D:/Visual Studio Projects/Diabolus Engine/Content/sprites/2.png</File>
     <File>D:/Visual Studio Projects/Diabolus Engine/Content/sprites/background.jpeg</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
