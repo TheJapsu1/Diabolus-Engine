@@ -57,9 +57,6 @@ namespace Diabolus_Engine
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _planetSprite = Content.Load<Texture2D>("sprites/2");
-            _font = Content.Load<SpriteFont>("fonts/title");
             Services.AddService(typeof(SpriteBatch), _spriteBatch);
         }
 
