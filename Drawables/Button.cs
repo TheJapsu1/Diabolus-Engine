@@ -34,16 +34,10 @@ namespace Diabolus_Engine.Drawables
             base.LoadContent();
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            HandleInput();
-            base.Update(gameTime);
-        }
-
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch spriteBatch = Game.Services.GetService(typeof(SpriteBatch)) as SpriteBatch;
-            var color = IsTouching ? Color.Gray : Color.White;
+            var color = OnMouseHold ? Color.Gray : Color.White;
             spriteBatch.Begin();
             spriteBatch.Draw(_dummyTexture, Rectangle, color);
             spriteBatch.DrawString(_font, _text, Rectangle.Center.ToVector2() - _font.MeasureString(_text) / 2, _textColor);

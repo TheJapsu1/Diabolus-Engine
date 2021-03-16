@@ -34,6 +34,12 @@ namespace Diabolus_Engine
             //create our info panel
             Components.Add(new InfoPanel(this));
 
+            //create test handle
+            Segment segment1 = new Segment(this);
+            Components.Add(segment1);
+            Segment segment2 = new Segment(this);
+            Components.Add(segment2);
+
             //create our button rectangles
             buttons.Add(new Rectangle(GetScreenPosition(ScreenPosition.BottomRight, GraphicsDevice).ToPoint(), new Point(100, 60)));
 

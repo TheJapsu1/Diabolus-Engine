@@ -24,7 +24,7 @@ namespace Diabolus_Engine
 
         public static void Log(string text)
         {
-            Console.WriteLine(text);
+            Console.WriteLine($"[{DateTime.Now.TimeOfDay}]: {text}");
         }
 
         public static void ConfirmLeave(Game game)

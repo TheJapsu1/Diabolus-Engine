@@ -7,42 +7,49 @@ using System.Text;
 
 namespace Diabolus_Engine
 {
-    class Clickable : DrawableGameComponent
+    public class Clickable : GameObject
     {
         public event EventHandler AddOnClickListener;
-        readonly Rectangle rectangle;
-        bool wasClicked;
+        public Rectangle clickDetectionArea;
         bool isClicked;
+        bool wasClicked;
 
-        public bool IsTouching { get { return isClicked; } }
-        public bool IsClicked { get { return (wasClicked == true) && (isClicked == false); } }
+        public bool OnMouseDown { get { return (wasClicked == false) && (isClicked == true); } }
+        public bool OnMouseHold { get { return isClicked; } }
+        public bool OnMouseUp { get { return (wasClicked == true) && (isClicked == false); } }
 
-        protected Rectangle Rectangle { get { return rectangle; } }
+        protected Rectangle Rectangle { get { return clickDetectionArea; } }
         protected new Editor Game { get { return (Editor)base.Game; } }
 
+        public Clickable(Game game) : base(game, null) { }
         
-        public Clickable(Editor game, Rectangle targetRectangle) : base(game)
+        public Clickable(Editor game, Rectangle targetRectangle) : base(game, null)
         {
-            rectangle = targetRectangle;
+            clickDetectionArea = targetRectangle;
         }
 
-        
-        protected void HandleInput()
+        public override void Update(GameTime gameTime)
+        {
+            HandleInput();
+            base.Update(gameTime);
+        }
+
+        bool hold = false;
+        private void HandleInput()
         {
             wasClicked = isClicked;
             isClicked = false;
+            Rectangle mouseRect = new Rectangle((int)Input.GetMousePos().X - 5, (int)Input.GetMousePos().Y - 5, 10, 10);
 
-            MouseState mouse = Mouse.GetState();
-
-            Rectangle mouseRect = new Rectangle((int)mouse.Position.X - 5, (int)mouse.Position.Y - 5, 10, 10);
-
-            if (rectangle.Intersects(mouseRect) && (mouse.LeftButton == ButtonState.Pressed))
+            if (clickDetectionArea.Intersects(mouseRect) && Input.GetLMBDown())
+                hold = true;
+            if(clickDetectionArea.Intersects(mouseRect) && Input.GetLMB() && hold)
                 isClicked = true;
+            if (Input.GetLMBUp() || !clickDetectionArea.Intersects(mouseRect))
+                hold = false;
 
             if ((wasClicked == true) && (isClicked == false))
-            {
                 OnClick();
-            }
         }
 
         public void OnClick()
